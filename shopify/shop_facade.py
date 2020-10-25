@@ -1,7 +1,7 @@
-from session import Session
-from product_list import ProductList
-from exporter import Exporter
-from importer import Importer
+from shopify.session.session import Session
+from shopify.products.product_list import ProductList
+from shopify.exporter.exporter import Exporter
+from shopify.importer.importer import Importer
 
 class ShopFacade:
     def __init__(self, session: Session):
@@ -12,6 +12,7 @@ class ShopFacade:
     def view_all_products(self):
         for (index, product) in enumerate(self.products):
             print(str(index) + product.get_display_info())
+        print('\n')
 
     def edit_product(self):
         product_index = int(input('Enter index of product to edit: '))

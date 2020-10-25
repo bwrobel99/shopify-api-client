@@ -1,5 +1,5 @@
 import json
-from session import Session
+from ..session.session import Session
 
 class Product:
     def __init__(self, product_data):

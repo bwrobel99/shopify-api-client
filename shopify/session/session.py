@@ -1,6 +1,6 @@
 import requests
 import sys
-from helpers import validate_host
+from shopify.session.helpers import validate_host
 
 class Session(requests.Session):
     def __init__(self, host: str, access_token: str, *args, **kwargs):

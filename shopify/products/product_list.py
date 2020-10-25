@@ -1,7 +1,7 @@
 import requests
 import json
-from session import Session
-from product import Product
+from .product import Product
+from ..session.session import Session
 
 class ProductList:
     def __init__(self, session: Session, *args, **kwargs):
@@ -13,7 +13,7 @@ class ProductList:
         return self.products[index]
 
     def get_raw_list(self):
-        return [product.get_daw_data() for product in self.products]
+        return [product.get_raw_data() for product in self.products]
 
     def create_from_file(self, imported_data):
         self.products = [Product(data) for data in imported_data['products']]

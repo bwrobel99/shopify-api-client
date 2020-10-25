@@ -1,6 +1,6 @@
 import csv, json
-from session import Session
-from product_list import ProductList
+from shopify.session.session import Session
+from shopify.products.product_list import ProductList
 
 class Importer:
     def import_csv(self, filename: str):

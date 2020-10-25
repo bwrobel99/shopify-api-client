@@ -1,8 +1,8 @@
 import csv, json
 from datetime import datetime
-from session import Session
-from product_list import ProductList
-from ehelpers import generate_filename, filter_data
+from ..session import Session
+from ..products.product_list import ProductList
+from .helpers import generate_filename, filter_data
 
 class Exporter:
     def __init__(self, products: ProductList):
