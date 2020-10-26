@@ -2,10 +2,13 @@ from shopify.session import Session
 from shopify.shop_facade import ShopFacade
 import click
 
+"""
+main script that handles command line arguments & basic ui
+"""
+
 @click.group()
 def main():
     pass
-
 
 @main.command()
 @click.argument('host')
@@ -37,16 +40,14 @@ def imp(host, access_token, filename):
         sf.import_json(filename)
         print('Pushing changes to server...')
         changed_products = sf.save_imported_changes_to_server()
-        print('Done! Products that changed: ')
-        print(*changed_products)
     elif filename[-3:] == 'yml':
         print('Importing products from YML file...')
         sf = ShopFacade(s)
         sf.import_yml(filename)
         print('Pushing changes to server...')
         changed_products = sf.save_imported_changes_to_server()
-        print('Done! Products that changed: ')
-        print(*changed_products)
+    print('Done! Products that changed: ')
+    print(*changed_products)
 
 @main.command()
 def ui():
@@ -96,7 +97,6 @@ def ui_edit(shop: ShopFacade):
     if action == 6:
         shop.update_product_and_variant(product_index)
     print('Done!\n')
-
 
 if __name__ == "__main__":
     main()

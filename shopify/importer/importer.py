@@ -10,5 +10,5 @@ class Importer:
 
     def import_json(self, filename: str):
         with open(filename, mode='r') as json_file:
-            products_raw_data = json.load(json_file)
-        return products_raw_data
+            data = json.load(json_file)
+        return data
