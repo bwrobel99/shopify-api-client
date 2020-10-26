@@ -61,7 +61,7 @@ class Product:
             input('Choose variant to edit: '))
         print(self.variant_updateable_attributes)
         attribute_index = int(
-            input('Choose attribute to edit: '))
+            input('Choose index of attribute to edit (starting with 0): '))
         attribute_chosen = self.variant_updateable_attributes[attribute_index]
         variants[variant_index][attribute_chosen] = input(
             'Enter new value for attribute: ')
@@ -85,7 +85,7 @@ class Product:
                 'variants': product_variants_ordered
             }
         }
-        return self.edit(self.session, new_data)
+        return new_data
 
     def reorder_images(self):
         product_images = self.get_raw_data()['images']
@@ -101,9 +101,9 @@ class Product:
                 'images': order
             }
         }
-        return self.edit(self.session, new_data)
+        return new_data
 
-    def add_image(self, image_src):
+    def add_image(self, image_src: str):
         product_images = self.get_raw_data()['images']
         product_images.append({
             'src': image_src
@@ -114,4 +114,4 @@ class Product:
                 'images': product_images
             }
         }
-        return self.edit(self.session, new_data)
+        return new_data

@@ -19,12 +19,12 @@ class ShopFacade:
     def refresh_product_list(self):
         self.products.download_all_products()
 
-    def edit_product_attributes(self, product_index):
+    def edit_product_attributes(self, product_index: int):
         product_chosen = self.products[product_index]
         new_data = product_chosen.edit_attributes()
         return product_chosen.edit(self.session, new_data)
     
-    def clear_product_images(self, product_index):
+    def clear_product_images(self, product_index: int):
         product_chosen = self.products[product_index]
         new_data = {
             'product': {
@@ -34,17 +34,17 @@ class ShopFacade:
         }
         return product_chosen.edit(self.session, new_data)
         
-    def add_product_image(self, product_index, image_src):
+    def add_product_image(self, product_index: int, image_src: str):
         product_chosen = self.products[product_index]
         new_data = product_chosen.add_image(image_src)
         return product_chosen.edit(self.session, new_data)
 
-    def reorder_product_images(self, product_index):
+    def reorder_product_images(self, product_index: int):
         product_chosen = self.products[product_index]
         new_data = product_chosen.reorder_images()
         return product_chosen.edit(self.session, new_data)
 
-    def reorder_product_variants(self, product_index):
+    def reorder_product_variants(self, product_index: int):
         product_chosen = self.products[product_index]
         new_data = product_chosen.reorder_variants()
         return product_chosen.edit(self.session, new_data)
