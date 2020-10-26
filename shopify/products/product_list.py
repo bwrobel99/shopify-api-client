@@ -2,6 +2,7 @@ import requests
 import json
 from .product import Product
 from ..session.session import Session
+from .helpers import extract_url
 
 class ProductList:
     def __init__(self, session: Session, *args, **kwargs):
@@ -21,5 +22,13 @@ class ProductList:
     def download_all_products(self):
         response = self.session.get(
             self.session.host + '/admin/api/2020-07/products.json')
-        products = json.loads(response.text)
-        self.products = [Product(data) for data in products['products']]
+        products_all = json.loads(response.text)['products']
+        if 'Link' in response.headers.keys():  # if more than 1 page - make requests for the rest
+            while 'next' in response.headers['Link']:
+                url = extract_url(response.headers['Link'])
+                response = self.session.get(url)
+                products_from_next_page = json.loads(response.text)['products']
+                products_all += products_from_next_page
+        self.products = [
+            Product(data) for data in products_all
+        ]

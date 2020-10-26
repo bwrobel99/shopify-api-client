@@ -1,3 +1,4 @@
+from .helpers import get_changed_products_ids
 from shopify.session.session import Session
 from shopify.products.product_list import ProductList
 from shopify.exporter.exporter import Exporter
@@ -10,39 +11,52 @@ class ShopFacade:
         self.products.download_all_products()
 
     def view_all_products(self):
+        print('INDEX   ID   TITLE')
         for (index, product) in enumerate(self.products):
             print(str(index) + product.get_display_info())
         print('\n')
 
-    def edit_product(self):
-        product_index = int(input('Enter index of product to edit: '))
-        
-        try:
-            product_chosen = self.products[product_index]
-        except IndexError:
-            product_index = int(input('Wrong index! Please enter it again: '))
-            product_chosen = self.products[product_index]
+    def refresh_product_list(self):
+        self.products.download_all_products()
 
-        print('Product chosen: ' + product_chosen.get_display_info())
-        print('What do you want to edit?') 
-        attributes = [attr for attr in vars(product_chosen)]
-        for (index, attr) in enumerate(attributes):
-            print(str(index) + ' ' + attr if attr != "id" else " ")
-
-        attribute_index = int(input('Enter index of product to edit: '))
-        attribute_chosen = attributes[attribute_index]
-        attribute_new_value = input('Enter new value for attribute: ')
+    def edit_product_attributes(self, product_index):
+        product_chosen = self.products[product_index]
+        new_data = product_chosen.edit_attributes()
+        return product_chosen.edit(self.session, new_data)
+    
+    def clear_product_images(self, product_index):
+        product_chosen = self.products[product_index]
         new_data = {
             'product': {
                 'id': product_chosen.id,
+                'images': []
             }
         }
-        new_data['product'][attribute_chosen] = attribute_new_value
         return product_chosen.edit(self.session, new_data)
         
-    def export_csv(self):
+    def add_product_image(self, product_index, image_src):
+        product_chosen = self.products[product_index]
+        new_data = product_chosen.add_image(image_src)
+        return product_chosen.edit(self.session, new_data)
+
+    def reorder_product_images(self, product_index):
+        product_chosen = self.products[product_index]
+        new_data = product_chosen.reorder_images()
+        return product_chosen.edit(self.session, new_data)
+
+    def reorder_product_variants(self, product_index):
+        product_chosen = self.products[product_index]
+        new_data = product_chosen.reorder_variants()
+        return product_chosen.edit(self.session, new_data)
+
+    def update_product_and_variant(self, product_index):
+        product_chosen = self.products[product_index]
+        new_data = product_chosen.update_product_and_variant()
+        return product_chosen.edit(self.session, new_data)
+        
+    def export_yml(self):
         exporter = Exporter(self.products)
-        filename = exporter.export_csv()
+        filename = exporter.export_yml()
         return filename
 
     def export_json(self):
@@ -50,16 +64,20 @@ class ShopFacade:
         filename = exporter.export_json()
         return filename
 
-    def import_csv(self, filename):
+    def import_yml(self, filename):
         importer = Importer()
-        imported_data = importer.import_csv(filename)
-        self.products = ProductList(self.session, imported_data=imported_data)
+        imported_data = importer.import_yml(filename)
+        self.products_imported = ProductList(self.session, imported_data=imported_data)
 
     def import_json(self, filename):
         importer = Importer()
         imported_data = importer.import_json(filename)
-        self.products = ProductList(self.session, imported_data=imported_data)
+        self.products_imported = ProductList(
+            self.session, imported_data=imported_data)
 
-    def save_changes_to_server(self):
+    def save_imported_changes_to_server(self):
+        changed_ids = get_changed_products_ids(self.products.get_raw_list(), self.products_imported.get_raw_list())
         for product in self.products:
-            product.save_state_to_server(self.session)
+            if product.id in changed_ids:
+                product.save_state_to_server(self.session)
+        return changed_ids

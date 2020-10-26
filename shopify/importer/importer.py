@@ -1,17 +1,11 @@
-import csv, json
+import yaml, json
 from shopify.session.session import Session
 from shopify.products.product_list import ProductList
 
 class Importer:
-    def import_csv(self, filename: str):
-        with open(filename, mode='r') as csv_file:
-            csv_reader = csv.DictReader(csv_file)
-            products_raw_data = []
-            for row in csv_reader:
-                products_raw_data.append(row)
-        data = {
-            'products': products_raw_data
-        }
+    def import_yml(self, filename: str):
+        with open(filename, mode='r') as yml_file:
+            data = yaml.load(yml_file)
         return data
 
     def import_json(self, filename: str):
