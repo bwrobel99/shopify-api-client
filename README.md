@@ -2,7 +2,7 @@
 A basic shopify API client capable of fetching info about the products &amp; editing and exporting it.
 
 # Usage
-Use the client by executing the file present in the `bin` folder
+Use the client by executing the file present in the `bin` folder:
 ```python
 py .\bin\shopify_api_client.py --ACTION --ARGS
 ```
